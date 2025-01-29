@@ -90,6 +90,19 @@ void display(string guessedWord) {
 		cout << guessedWord[i] << ' ';
 	}
 	cout << "\n Incorrect guesses: ";
-	for(int )
+	for (int i = 0; i < MAX_INCORRECT; i++) {
+		cout << incorrect[i] << ' ';
+	}
+	cout << "\n Misses left: " << MAX_INCORRECT - misses << "\n";
+	displayHangman(); 
 }
 
+//Function to check the player's guess against the world 
+string procesGuess(char guess, string word, string guessWord) {
+	bool isCorrect = false;
+	for (int i = 0; i < word.length(); i++)
+
+
+
+
+}
