@@ -1,108 +1,163 @@
-#include <iostream> 
+#include <iostream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
 using namespace std;
 
-
-//Global constants and variables
+// Global constants and variables
 const int MAX_INCORRECT = 6;
 char incorrect[MAX_INCORRECT];
 int numIncorrect = 0;
 int misses = 0;
 
+void display(string guessedWord);
+void displayHangman();
+string processGuess(char guess, string word, string guessedWord);
+
+int main() {
+    string wordList[] = { "computer", "science", "programming", "hangman",
+                          "game", "cat", "dog", "bird" };
+    srand(time(0));
+    string word = wordList[rand() % 8];
+    string guessedWord(word.length(), '_');
+
+    cout << "Welcome to Hangman!\n";
+
+    while (misses < MAX_INCORRECT && guessedWord != word) {
+        display(guessedWord);
+        cout << "Enter your guess: ";
+        char guess;
+        cin >> guess;
+
+        string oldGuessedWord = guessedWord;
+        guessedWord = processGuess(guess, word, guessedWord);
+
+        if (guessedWord == oldGuessedWord) {
+            cout << "Oops! That letter isn't in there!\n";
+        }
+        else {
+            cout << "Good guess!\n";
+        }
+    }
+
+    display(guessedWord);
+
+    if (guessedWord == word) {
+        cout << "Congratulations! You guessed the word: " << word << "\n";
+    }
+    else {
+        cout << "Game Over! The word was: " << word << "\n";
+    }
+
+    return 0;
+}
 
 void displayHangman() {
-	cout << "\n";
-	switch (misses) {
-	case 0: //none
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	case 1: //Head
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "		|\n"; 
-		cout << "==========\n";
-		break;
-	
-	case 2: //Body
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "	|	|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	case 3: //Left Arm
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "  /|	|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	case 4: //Right Arm
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "  /|\\	|\n";
-		cout << "		|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	case 5: // Left leg
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "  /|\\  |\n";
-		cout << "  /	|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	case 6: // Right Leg
-		cout << "	+---+\n";
-		cout << "	|	|\n";
-		cout << "	O	|\n";
-		cout << "  /|\\  |\n";
-		cout << "  / \\	|\n";
-		cout << "		|\n";
-		cout << "==========\n";
-		break;
-	}
-	
+    cout << "\n";
+    switch (misses) {
+    case 0: //none
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 1: //Head
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 2: //Body
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << "  |   |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 3: //Left Arm
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << " /|   |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 4: //Right Arm
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << " /|\\  |\n";
+        cout << "      |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 5: // Left leg
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << " /|\\  |\n";
+        cout << " /    |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    case 6: // Right Leg
+        cout << "  +---+\n";
+        cout << "  |   |\n";
+        cout << "  O   |\n";
+        cout << " /|\\  |\n";
+        cout << " / \\  |\n";
+        cout << "      |\n";
+        cout << "==========\n";
+        break;
+    }
 }
-//Function to display the current state of the game
+
 void display(string guessedWord) {
-	cout << "\n Word: ";
-	for (int i = 0; i < guessedWord.length(); i++) {
-		cout << guessedWord[i] << ' ';
-	}
-	cout << "\n Incorrect guesses: ";
-	for (int i = 0; i < MAX_INCORRECT; i++) {
-		cout << incorrect[i] << ' ';
-	}
-	cout << "\n Misses left: " << MAX_INCORRECT - misses << "\n";
-	displayHangman(); 
+    cout << "\nWord: ";
+    for (int i = 0; i < guessedWord.length(); i++) {
+        cout << guessedWord[i] << ' ';
+    }
+    cout << "\nIncorrect guesses: ";
+    for (int i = 0; i < numIncorrect; i++) {
+        cout << incorrect[i] << ' ';
+    }
+    cout << "\nMisses left: " << MAX_INCORRECT - misses << "\n";
+    displayHangman();
 }
 
-//Function to check the player's guess against the world 
-string procesGuess(char guess, string word, string guessWord) {
-	bool isCorrect = false;
-	for (int i = 0; i < word.length(); i++)
+string processGuess(char guess, string word, string guessedWord) {
+    bool isCorrect = false;
+    for (int i = 0; i < word.length(); i++) {
+        if (word[i] == guess && guessedWord[i] == '_') {
+            guessedWord[i] = guess;
+            isCorrect = true;
+        }
+    }
 
+    if (!isCorrect) {
+        bool alreadyGuessed = false;
 
+        for (int i = 0; i < numIncorrect; i++) {
+            if (incorrect[i] == guess) {
+                alreadyGuessed = true;
+                break;
+            }
+        }
 
-
+        if (!alreadyGuessed && numIncorrect < MAX_INCORRECT) {
+            incorrect[numIncorrect++] = guess;
+            misses++;
+        }
+    }
+    return guessedWord;
 }
